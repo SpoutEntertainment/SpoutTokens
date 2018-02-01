@@ -47,7 +47,14 @@ $ truffle compile
 
 #### Deployed contract at Rinkeby
 
-  - Contract address: `0x8155c5bDDBE64Fb9469F335A6aFF3345725f8aA2`
+  - Contract
+    - Address: `0x8155c5bDDBE64Fb9469F335A6aFF3345725f8aA2`
+    - Total supply: none
+    - Rate: 1.000
+  - Contract
+    - Address: `0x8E09C0b135AAED278b093F2bf3360A58FE3c6249`
+    - Total supply: 1.000.000
+    - Rate: 100.000
 
 ### Helpful links
 
