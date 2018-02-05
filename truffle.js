@@ -17,13 +17,6 @@ module.exports = {
       from: "0x5f7a2e367da8588172567ff6915e648b69e09b4f",
       gas: 6712390
       // gasPrice: web3.toWei("100", "gwei")
-    },
-    ropsten: {
-      host: "localhost",
-      port: 8545,
-      network_id: 3,
-      // from: "0x9f6d05b40efa89b595c2318ddbee4cb1b8dd44c1",
-      gas: 6712390
     }
   },
   solc: {
