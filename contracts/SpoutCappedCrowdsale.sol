@@ -38,4 +38,9 @@ contract SpoutCappedCrowdsale is CappedCrowdsale, Ownable {
   function transferTokenOwnership(address newOwner) onlyOwner public {
     token.transferOwnership(newOwner);
   }
+
+  function validPurchase() internal view returns (bool) {
+       bool greaterThanMinInvestment = msg.value >= 0.1 ether;
+      return super.validPurchase() && greaterThanMinInvestment ;
+  }
 }
