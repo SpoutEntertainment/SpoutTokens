@@ -7,12 +7,13 @@ module.exports = function(deployer, network, accounts) {
   const rate = new web3.BigNumber(parseInt(process.env.CONTRACT_RATE))
   const cap = new web3.BigNumber(web3.toWei(parseInt(process.env.CONTRACT_CAP), 'ether'))
   const wallet = accounts[0]
+  const minValue = new web3.BigNumber(web3.toWei(parseFloat(process.env.CONTRACT_MIN_VALUE),'ether'))
 
   let token
 
   deployer.deploy(SpoutMintableToken)
     .then(() => {
-      return deployer.deploy(SpoutCappedCrowdsale, startTime, endTime, rate, cap, wallet, SpoutMintableToken.address)
+      return deployer.deploy(SpoutCappedCrowdsale, startTime, endTime, rate, cap, wallet, SpoutMintableToken.address, minValue)
     })
     .then(() => {
       return SpoutMintableToken.deployed()
