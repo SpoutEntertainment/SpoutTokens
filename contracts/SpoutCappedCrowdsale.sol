@@ -9,19 +9,23 @@ contract SpoutCappedCrowdsale is CappedCrowdsale, Ownable {
 
   address public spoutTokenAddress;
 
+  uint256 minValue;
+
   function SpoutCappedCrowdsale(
     uint256 _startTime,
     uint256 _endTime,
     uint256 _rate,
     uint256 _cap,
     address _wallet,
-    address _spoutTokenAddress
+    address _spoutTokenAddress,
+    uint256 _minValue
   ) public
     Crowdsale(_startTime, _endTime, _rate, _wallet)
     CappedCrowdsale(_cap)
   {
     spoutTokenAddress = _spoutTokenAddress;
     token = createTokenContract();
+    minValue = _minValue;
   }
 
   // creates the token to be sold.
@@ -37,5 +41,10 @@ contract SpoutCappedCrowdsale is CappedCrowdsale, Ownable {
 
   function transferTokenOwnership(address newOwner) onlyOwner public {
     token.transferOwnership(newOwner);
+  }
+
+  function validPurchase() internal view returns (bool) {
+       bool greaterThanMinInvestment = msg.value >= minValue;
+      return super.validPurchase() && greaterThanMinInvestment ;
   }
 }
