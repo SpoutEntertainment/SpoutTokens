@@ -161,4 +161,8 @@ contract SpoutCrowdsale {
 
     return now > icoOpeningTime;
   }
+
+  function mintTo(address beneficiary, uint256 _amount) onlyOwner public returns (bool) {
+    return token.mint(beneficiary, _amount);
+  }
 }
