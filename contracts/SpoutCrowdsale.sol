@@ -2,8 +2,9 @@ pragma solidity ^0.4.17;
 
 import './SpoutMintableToken.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
+import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
-contract SpoutCrowdsale {
+contract SpoutCrowdsale is Ownable {
   using SafeMath for uint256;
 
   MintableToken public token;
