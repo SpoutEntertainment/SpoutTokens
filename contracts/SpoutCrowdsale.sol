@@ -34,6 +34,8 @@ contract SpoutCrowdsale is Ownable {
   // Min contribution is 0.1 ether
   uint256 public constant MINIMUM_CONTRIBUTION = 10**17;
 
+  event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
+
   enum Phases {
     Preparing,
     Presale,
@@ -124,6 +126,7 @@ contract SpoutCrowdsale is Ownable {
       icoWeiRaised = icoWeiRaised.add(_weiAmount);
     }
 
+    TokenPurchase(msg.sender, _beneficiary, _weiAmount, tokens);
     token.mint(_beneficiary, tokens);
 
     _forwardFunds();
