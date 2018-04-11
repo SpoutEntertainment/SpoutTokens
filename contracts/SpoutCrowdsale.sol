@@ -7,163 +7,196 @@ import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 contract SpoutCrowdsale is Ownable {
   using SafeMath for uint256;
 
-  MintableToken public token;
+  uint256 private constant MAY_19_2018 = 1526688000;
+  uint256 private constant MAY_21_2018 = 1526860800;
+  uint256 private constant MAY_22_2018 = 1526947200;
+  uint256 private constant MAY_24_2018 = 1527120000;
+  uint256 private constant MAY_25_2018 = 1527206400;
+  uint256 private constant MAY_28_2018 = 1527465600;
+  uint256 private constant JUN_01_2018 = 1527811200;
+  uint256 private constant JUN_07_2018 = 1528329600;
+  uint256 private constant JUN_08_2018 = 1528416000;
+  uint256 private constant JUN_14_2018 = 1528934400;
+  uint256 private constant JUN_15_2018 = 1529020800;
+  uint256 private constant JUN_21_2018 = 1529539200;
+  uint256 private constant JUN_22_2018 = 1529625600;
+  uint256 private constant JUN_30_2018 = 1530316800;
 
-  address public wallet;
+  // uint256 constant PRESALE1_OPENING_TIME = MAY_19_2018;
+  // uint256 constant PRESALE1_CLOSING_TIME = MAY_21_2018;
+  // uint256 constant PRESALE2_OPENING_TIME = MAY_22_2018;
+  // uint256 constant PRESALE2_CLOSING_TIME = MAY_24_2018;
+  // uint256 constant PRESALE3_OPENING_TIME = MAY_25_2018;
+  // uint256 constant PRESALE3_CLOSING_TIME = MAY_28_2018;
+  uint256 constant PRESALE1_OPENING_TIME = 1523318400; // 10/4/2018
+  uint256 constant PRESALE1_CLOSING_TIME = 1523404799; // 10/4/2018 23:59:59
+  uint256 constant PRESALE2_OPENING_TIME = 1523404800; // 11/4/2018
+  uint256 constant PRESALE2_CLOSING_TIME = 1523491199; // 11/4/2018 23:59:59
+  uint256 constant PRESALE3_OPENING_TIME = 1523491200; // 12/4/2018
+  uint256 constant PRESALE3_CLOSING_TIME = 1523577599; // 12/4/2018 23:59:59
+
+  // uint256 constant ICO1_OPENING_TIME = JUN_01_2018;
+  // uint256 constant ICO1_CLOSING_TIME = JUN_07_2018;
+  // uint256 constant ICO2_OPENING_TIME = JUN_08_2018;
+  // uint256 constant ICO2_CLOSING_TIME = JUN_14_2018;
+  // uint256 constant ICO3_OPENING_TIME = JUN_15_2018;
+  // uint256 constant ICO3_CLOSING_TIME = JUN_21_2018;
+  // uint256 constant ICO4_OPENING_TIME = JUN_22_2018;
+  // uint256 constant ICO4_CLOSING_TIME = JUN_30_2018;
+  uint256 constant ICO1_OPENING_TIME = 1523577600; // 13/4/2018
+  uint256 constant ICO1_CLOSING_TIME = 1523663999; // 13/4/2018 23:59:59
+  uint256 constant ICO2_OPENING_TIME = 1523836800; // 16/4/2018
+  uint256 constant ICO2_CLOSING_TIME = 1523923199; // 16/4/2018 23:59:59
+  uint256 constant ICO3_OPENING_TIME = 1523923200; // 17/4/2018
+  uint256 constant ICO3_CLOSING_TIME = 1524009599; // 17/4/2018 23:59:59
+  uint256 constant ICO4_OPENING_TIME = 1524009600; // 18/4/2018
+  uint256 constant ICO4_CLOSING_TIME = 1524095999; // 18/4/2018 23:59:59
+
+  MintableToken public token;
 
   uint256 public presaleRate;
 
   uint256 public icoRate;
 
-  uint256 presaleOpeningTime;
-
-  uint256 presaleClosingTime;
-
-  uint256 icoOpeningTime;
-
-  uint256 icoClosingTime;
-
-  uint256 public presaleCap;
-
-  uint256 public icoCap;
-
-  uint256 public presaleWeiRaised;
-
-  uint256 public icoWeiRaised;
-
-  // Min contribution is 0.1 ether
-  uint256 public constant MINIMUM_CONTRIBUTION = 10**17;
+  address public wallet;
 
   event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
-
-  enum Phases {
-    Preparing,
-    Presale,
-    PresaleFinalized,
-    ICO,
-    ICOFinalized,
-    Success,
-    Failure
-  }
-
-  Phases public phase;
 
   function SpoutCrowdsale(
     address _token,
     uint256 _presaleRate,
     uint256 _icoRate,
-    uint256 _presaleOpeningTime,
-    uint256 _presaleClosingTime,
-    uint256 _icoOpeningTime,
-    uint256 _icoClosingTime,
-    uint256 _presaleCap,
-    uint256 _icoCap,
     address _wallet
   ) {
     require(_token != address(0));
     require(_wallet != address(0));
-    require(_presaleRate > 0);
-    require(_icoRate > 0);
-    require(_presaleOpeningTime > now);
-    require(_icoOpeningTime > _presaleOpeningTime);
-    require(_icoOpeningTime > _presaleClosingTime);
 
     token = SpoutMintableToken(_token);
-    wallet = _wallet;
 
-    presaleCap = _presaleCap;
     presaleRate = _presaleRate;
-    presaleOpeningTime = _presaleOpeningTime;
-    presaleClosingTime = _presaleClosingTime;
-
-    icoCap = _icoCap;
     icoRate = _icoRate;
-    icoOpeningTime = _icoOpeningTime;
-    icoClosingTime = _icoClosingTime;
 
-    phase = Phases.Preparing;
+    wallet = _wallet;
   }
 
   function () external payable {
-    if (isPresalePeriod()) {
-      if (phase == Phases.Preparing) {
-        phase = Phases.Presale;
-      }
 
-      buyTokens(msg.sender, msg.value);
-    } else if (isICOPeriod()) {
-      if (phase == Phases.PresaleFinalized) {
-        phase = Phases.ICO;
-      }
+    require(msg.sender != address(0));
+    require(isPresalePeriod() || isICOPeriod());
 
-      buyTokens(msg.sender, msg.value);
-    } else {
-      revert();
-    }
+    uint256 tokenRate = getCurrentTokenRate();
+    uint256 tokens = msg.value.mul(tokenRate);
+    uint256 bonusRate = getCurrentBonus();
+    uint256 bonusTokens = bonusRate.mul(tokens.div(100));
+
+    tokens = tokens.add(bonusTokens);
+
+    TokenPurchase(msg.sender, msg.sender, msg.value, tokens);
+    token.mint(msg.sender, tokens);
+
+    forwardFunds();
   }
 
-  function buyTokens(address _beneficiary, uint256 _weiAmount) internal {
-    require(_beneficiary != address(0));
-    require(_weiAmount >= MINIMUM_CONTRIBUTION);
-
-    uint256 rate;
-    if (isPhasePresale()) {
-      rate = presaleRate;
-    } else if (isPhaseICO()) {
-      rate = icoRate;
-    } else {
-      rate = 0;
-    }
-
-    uint256 tokens = _getTokenAmount(_weiAmount, rate);
-    require(tokens != 0);
-
-    if (isPhasePresale()) {
-      require(presaleWeiRaised.add(_weiAmount) <= presaleCap);
-      presaleWeiRaised = presaleWeiRaised.add(_weiAmount);
-    } else if (isPhaseICO()) {
-      require(icoWeiRaised.add(_weiAmount) <= icoCap);
-      icoWeiRaised = icoWeiRaised.add(_weiAmount);
-    }
-
-    TokenPurchase(msg.sender, _beneficiary, _weiAmount, tokens);
-    token.mint(_beneficiary, tokens);
-
-    _forwardFunds();
-  }
-
-  function _forwardFunds() internal {
+  function forwardFunds() internal {
     wallet.transfer(msg.value);
   }
 
-  function _getTokenAmount(uint256 _weiAmount, uint256 _rate) internal returns (uint256) {
-    return _weiAmount.mul(_rate);
+  function isPresale1Period() private view returns (bool) {
+    if (now >= PRESALE1_OPENING_TIME && now < PRESALE1_CLOSING_TIME) {
+      return true;
+    }
+    return false;
   }
 
-  function isPhasePresale() constant returns (bool) {
-    return phase == Phases.Presale;
+  function isPresale2Period() private view returns (bool) {
+    if (now >= PRESALE2_OPENING_TIME && now < PRESALE2_CLOSING_TIME) {
+      return true;
+    }
+    return false;
   }
 
-  function isPresalePeriod() constant returns (bool) {
-    if (presaleWeiRaised > presaleCap || now >= presaleClosingTime) {
-      phase = Phases.PresaleFinalized;
-      return false;
+  function isPresale3Period() private view returns (bool) {
+    if (now >= PRESALE3_OPENING_TIME && now < PRESALE3_CLOSING_TIME) {
+      return true;
+    }
+    return false;
+  }
+
+  function isPresalePeriod() public view returns (bool) {
+    if (isPresale1Period() || isPresale2Period() || isPresale3Period()) {
+      return true;
+    }
+    return false;
+  }
+
+  function isICO1Period() private view returns (bool) {
+    if (now >= ICO1_OPENING_TIME && now < ICO1_CLOSING_TIME) {
+      return true;
+    }
+    return false;
+  }
+
+  function isICO2Period() private view returns (bool) {
+    if (now >= ICO2_OPENING_TIME && now < ICO2_CLOSING_TIME) {
+      return true;
+    }
+    return false;
+  }
+
+  function isICO3Period() private view returns (bool) {
+    if (now >= ICO3_OPENING_TIME && now < ICO3_CLOSING_TIME) {
+      return true;
+    }
+    return false;
+  }
+
+  function isICO4Period() private view returns (bool) {
+    if (now >= ICO4_OPENING_TIME && now < ICO4_CLOSING_TIME) {
+      return true;
+    }
+    return false;
+  }
+
+  function isICOPeriod() public view returns (bool) {
+    if (isICO1Period() || isICO2Period() || isICO3Period() || isICO4Period()) {
+      return true;
+    }
+    return false;
+  }
+
+  function getCurrentTokenRate() public view returns (uint256) {
+    if (isPresalePeriod()) {
+      return presaleRate;
+    } else if (isICOPeriod()) {
+      return icoRate;
+    }
+  }
+
+  function getCurrentBonus() public view returns (uint256) {
+    if (isPresale1Period()) {
+      return 15;
+    }
+    if (isPresale2Period()) {
+      return 10;
+    }
+    if (isPresale3Period()) {
+      return 5;
     }
 
-    return now > presaleOpeningTime;
-  }
-
-  function isPhaseICO() constant returns (bool) {
-    return phase == Phases.ICO;
-  }
-
-  function isICOPeriod() constant returns (bool) {
-    if (icoWeiRaised > icoCap || now >= icoClosingTime) {
-      phase = Phases.ICOFinalized;
-      return false;
+    if (isICO1Period()) {
+      return 5;
+    }
+    if (isICO2Period()) {
+      return 3;
+    }
+    if (isICO3Period()) {
+      return 2;
+    }
+    if (isICO4Period()) {
+      return 0;
     }
 
-    return now > icoOpeningTime;
+    return 0;
   }
 
   function mintTo(address beneficiary, uint256 _amount) onlyOwner public returns (bool) {
