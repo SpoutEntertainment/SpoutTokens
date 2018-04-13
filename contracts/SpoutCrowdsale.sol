@@ -60,7 +60,7 @@ contract SpoutCrowdsale is Ownable {
 
   address public wallet;
 
-  event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
+  event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount, uint256 tokenRate, uint256 bonusRate);
 
   function SpoutCrowdsale(
     address _token,
@@ -91,7 +91,7 @@ contract SpoutCrowdsale is Ownable {
 
     tokens = tokens.add(bonusTokens);
 
-    TokenPurchase(msg.sender, msg.sender, msg.value, tokens);
+    TokenPurchase(msg.sender, msg.sender, msg.value, tokens, tokenRate, bonusRate);
     token.mint(msg.sender, tokens);
 
     forwardFunds();
