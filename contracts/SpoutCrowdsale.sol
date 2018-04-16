@@ -7,20 +7,13 @@ import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 contract SpoutCrowdsale is Ownable {
   using SafeMath for uint256;
 
-  uint256 private constant MAY_19_2018 = 1526688000;
-  uint256 private constant MAY_21_2018 = 1526860800;
-  uint256 private constant MAY_22_2018 = 1526947200;
-  uint256 private constant MAY_24_2018 = 1527120000;
-  uint256 private constant MAY_25_2018 = 1527206400;
-  uint256 private constant MAY_28_2018 = 1527465600;
+  uint256 private constant APRIL_23_2018 = 1524441600;
+  uint256 private constant MAY_01_2018 = 1525132800;
+  uint256 private constant MAY_08_2018 = 1525737600;
+  uint256 private constant MAY_15_2018 = 1526342400;
   uint256 private constant JUN_01_2018 = 1527811200;
-  uint256 private constant JUN_07_2018 = 1528329600;
-  uint256 private constant JUN_08_2018 = 1528416000;
-  uint256 private constant JUN_14_2018 = 1528934400;
   uint256 private constant JUN_15_2018 = 1529020800;
-  uint256 private constant JUN_21_2018 = 1529539200;
-  uint256 private constant JUN_22_2018 = 1529625600;
-  uint256 private constant JUN_30_2018 = 1530316800;
+  uint256 private constant JULY_01_2018 = 1530403200;
 
   // uint256 constant PRESALE1_OPENING_TIME = MAY_19_2018;
   // uint256 constant PRESALE1_CLOSING_TIME = MAY_21_2018;
@@ -101,99 +94,47 @@ contract SpoutCrowdsale is Ownable {
     wallet.transfer(msg.value);
   }
 
-  function isPresale1Period() private view returns (bool) {
-    if (now >= PRESALE1_OPENING_TIME && now < PRESALE1_CLOSING_TIME) {
-      return true;
+  function getCurrentTokenRate() public view returns (uint256) {
+    if (now >= APRIL_23_2018 && now < MAY_15_2018) {
+      return presaleRate;
+    } else {
+      return icoRate;
     }
-    return false;
-  }
-
-  function isPresale2Period() private view returns (bool) {
-    if (now >= PRESALE2_OPENING_TIME && now < PRESALE2_CLOSING_TIME) {
-      return true;
-    }
-    return false;
-  }
-
-  function isPresale3Period() private view returns (bool) {
-    if (now >= PRESALE3_OPENING_TIME && now < PRESALE3_CLOSING_TIME) {
-      return true;
-    }
-    return false;
   }
 
   function isPresalePeriod() public view returns (bool) {
-    if (isPresale1Period() || isPresale2Period() || isPresale3Period()) {
-      return true;
-    }
-    return false;
-  }
-
-  function isICO1Period() private view returns (bool) {
-    if (now >= ICO1_OPENING_TIME && now < ICO1_CLOSING_TIME) {
-      return true;
-    }
-    return false;
-  }
-
-  function isICO2Period() private view returns (bool) {
-    if (now >= ICO2_OPENING_TIME && now < ICO2_CLOSING_TIME) {
-      return true;
-    }
-    return false;
-  }
-
-  function isICO3Period() private view returns (bool) {
-    if (now >= ICO3_OPENING_TIME && now < ICO3_CLOSING_TIME) {
-      return true;
-    }
-    return false;
-  }
-
-  function isICO4Period() private view returns (bool) {
-    if (now >= ICO4_OPENING_TIME && now < ICO4_CLOSING_TIME) {
+    if (now >= APRIL_23_2018 && now < MAY_15_2018) {
       return true;
     }
     return false;
   }
 
   function isICOPeriod() public view returns (bool) {
-    if (isICO1Period() || isICO2Period() || isICO3Period() || isICO4Period()) {
+    if (now >= MAY_15_2018 && now < JULY_01_2018) {
       return true;
     }
     return false;
   }
 
-  function getCurrentTokenRate() public view returns (uint256) {
-    if (isPresalePeriod()) {
-      return presaleRate;
-    } else if (isICOPeriod()) {
-      return icoRate;
-    }
-  }
-
   function getCurrentBonus() public view returns (uint256) {
-    if (isPresale1Period()) {
+    if (now >= APRIL_23_2018 && now < MAY_01_2018) {
       return 15;
     }
-    if (isPresale2Period()) {
+    if (now >= MAY_01_2018 && now < MAY_08_2018) {
       return 10;
     }
-    if (isPresale3Period()) {
+    if (now >= MAY_08_2018 && now < MAY_15_2018) {
       return 5;
     }
 
-    if (isICO1Period()) {
+    if (now >= MAY_15_2018 && now < JUN_01_2018) {
       return 5;
     }
-    if (isICO2Period()) {
+    if (now >= JUN_01_2018 && now < JUN_15_2018) {
       return 3;
     }
-    if (isICO3Period()) {
+    if (now >= JUN_15_2018 && now < JULY_01_2018) {
       return 2;
-    }
-    if (isICO4Period()) {
-      return 0;
     }
 
     return 0;
