@@ -15,36 +15,6 @@ contract SpoutCrowdsale is Ownable {
   uint256 private constant JUN_15_2018 = 1529020800;
   uint256 private constant JULY_01_2018 = 1530403200;
 
-  // uint256 constant PRESALE1_OPENING_TIME = MAY_19_2018;
-  // uint256 constant PRESALE1_CLOSING_TIME = MAY_21_2018;
-  // uint256 constant PRESALE2_OPENING_TIME = MAY_22_2018;
-  // uint256 constant PRESALE2_CLOSING_TIME = MAY_24_2018;
-  // uint256 constant PRESALE3_OPENING_TIME = MAY_25_2018;
-  // uint256 constant PRESALE3_CLOSING_TIME = MAY_28_2018;
-  uint256 constant PRESALE1_OPENING_TIME = 1523318400; // 10/4/2018
-  uint256 constant PRESALE1_CLOSING_TIME = 1523404799; // 10/4/2018 23:59:59
-  uint256 constant PRESALE2_OPENING_TIME = 1523404800; // 11/4/2018
-  uint256 constant PRESALE2_CLOSING_TIME = 1523491199; // 11/4/2018 23:59:59
-  uint256 constant PRESALE3_OPENING_TIME = 1523491200; // 12/4/2018
-  uint256 constant PRESALE3_CLOSING_TIME = 1523577599; // 12/4/2018 23:59:59
-
-  // uint256 constant ICO1_OPENING_TIME = JUN_01_2018;
-  // uint256 constant ICO1_CLOSING_TIME = JUN_07_2018;
-  // uint256 constant ICO2_OPENING_TIME = JUN_08_2018;
-  // uint256 constant ICO2_CLOSING_TIME = JUN_14_2018;
-  // uint256 constant ICO3_OPENING_TIME = JUN_15_2018;
-  // uint256 constant ICO3_CLOSING_TIME = JUN_21_2018;
-  // uint256 constant ICO4_OPENING_TIME = JUN_22_2018;
-  // uint256 constant ICO4_CLOSING_TIME = JUN_30_2018;
-  uint256 constant ICO1_OPENING_TIME = 1523577600; // 13/4/2018
-  uint256 constant ICO1_CLOSING_TIME = 1523663999; // 13/4/2018 23:59:59
-  uint256 constant ICO2_OPENING_TIME = 1523836800; // 16/4/2018
-  uint256 constant ICO2_CLOSING_TIME = 1523923199; // 16/4/2018 23:59:59
-  uint256 constant ICO3_OPENING_TIME = 1523923200; // 17/4/2018
-  uint256 constant ICO3_CLOSING_TIME = 1524009599; // 17/4/2018 23:59:59
-  uint256 constant ICO4_OPENING_TIME = 1524009600; // 18/4/2018
-  uint256 constant ICO4_CLOSING_TIME = 1524095999; // 18/4/2018 23:59:59
-
   MintableToken public token;
 
   uint256 public presaleRate;
